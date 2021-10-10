@@ -23,8 +23,27 @@ class Auth {
             }
         }
 
-        header('Location:'.$this->base."/login.html");
+        header('Location:'.$this->base."/login.php");
         exit;
+    }
+
+    public function validateLogin($email, $password) {
+        $userDAO = new UserDAO($this->$pdo);
+        $user = $userDAO->findByEmail($email);
+
+        if ($user) {
+            if (password_verify($password, $user->password)) {
+                $token = md5(time().rand(0,9));
+                $_SESSION['token'] = $token;
+
+                $user->token = $token;
+                $user->update($user);
+                
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

@@ -44,4 +44,57 @@ class UserDAO {
         return false;
     }
 
+    public function findByEmail($email) {
+        if ($email) {
+            $sql = $this->pdo->prepare("SELECT * FROM users WHERE email = :email");
+            $sql->bindValue('email', $email);
+            $sql->execute();
+
+            if ($sql->rowCount() > 0) {
+                $data = $sql->fetch(PDO::FETCH_ASSOC);
+                $user = $this->generateUser($data);
+                
+                return $user;
+            }
+        }
+
+        return false;
+    }
+
+    public function update(User $u) {
+        
+        $sql = $this->pdo->prepare("UPDATE users SET 
+            nome = :nome,
+            email = :email,
+            password = :password,
+            birthdate = :birthdate,
+            city = :city,
+            work = :work,
+            avatar = :avatar,
+            cover = :cover,
+            token = :token
+        ");
+
+        $sql->bindValue('nome', $u->nome);
+        $sql->bindValue('email', $u->email);
+        $sql->bindValue('password', $u->password);
+        $sql->bindValue('birthdate', $u->birthdate);
+        $sql->bindValue('city', $u->city);
+        $sql->bindValue('work', $u->work);
+        $sql->bindValue('avatar', $u->avatar);
+        $sql->bindValue('cover', $u->cover);
+        $sql->bindValue('token', $u->token);
+
+        $sql->execute();
+    }
+
 }
+
+$u->email = $array['email'] ?? '';
+        $u->password = $array['password'] ?? '';
+        $u->birthdate = $array['birthdate'] ?? '';
+        $u->city = $array['city'] ?? '';
+        $u->work = $array['work'] ?? '';
+        $u->avatar = $array['avatar'] ?? '';
+        $u->cover = $array['cover'] ?? '';
+        $u->token = $array['token'] ?? '';
