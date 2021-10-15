@@ -1,26 +1,45 @@
 <?php
 require 'config.php';
-require 'models/User.php';
-require 'DAO/UserDAO.php';
+require 'services/Auth.php';
 
-$name = filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_STRING);
+$name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
 $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
-$password = filter_input(INPUT_POST, 'senha', FILTER_SANITIZE_STRING);
-$birthdate = filter_input(INPUT_POST, 'data');
+$password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
+$birthdate = filter_input(INPUT_POST, 'birthdate');
 
-if ($nome && $email && $senha && $data_nasc) {
-    $userDAO = new UserDAO($pdo);
+function dataDeNascimentoInvalida() {
+    $_SESSION['flash'] = 'Data de nascimento inválida';
+    header('Location:'.BASE.'signup.php');
+    exit;
+}
 
-    $user = new User();
-    $user->name = $nome;
-    $user->email = $email;
-    $user->password = $password;
-    $user->birthdate = $birthdate;
+if ($name && $email && $password && $birthdate) {
 
-    $userDAO->store($user);
+    $auth = new Auth($pdo, BASE);
+    $birthdate = explode('-', $birthdate);
+
+    if (count($birthdate) != 3) {
+        dataDeNascimentoInvalida();
+    }
+
+    $birthdate = $birthdate[0].'-'.$birthdate[1].'-'.$birthdate[2];
+    if (strtotime($birthdate === false)) {;
+        dataDeNascimentoInvalida();
+    }
+
+    if ($auth->emailExists($email) === false) {
+        $auth->registerUser($name, $email, $password, $birthdate);
+    } else {
+        $_SESSION['flash'] = 'Este e-mail já está em uso!';
+        header('Location:'.BASE.'signup.php');
+        exit;
+    }
+
+    header('Location:'.BASE);
+    exit;
 
 }
 
 $_SESSION['flash'] = 'Preencha todos os campos!';
-header('Location:'.$base.'signup.php');
+header('Location:'.BASE.'signup.php');
 exit;

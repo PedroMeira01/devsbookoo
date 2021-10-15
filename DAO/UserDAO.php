@@ -28,7 +28,7 @@ class UserDAO {
     public function findByToken($token) {
         if (!empty($token)) {
             $sql = $this->pdo->prepare("SELECT * FROM users WHERE token = :token");
-            $sql->bindValue('token', $token);
+            $sql->bindValue(':token', $token);
             $sql->execute();
 
             if ($sql->rowCount() > 0) {
@@ -47,7 +47,7 @@ class UserDAO {
     public function findByEmail($email) {
         if ($email) {
             $sql = $this->pdo->prepare("SELECT * FROM users WHERE email = :email");
-            $sql->bindValue('email', $email);
+            $sql->bindValue(':email', $email);
             $sql->execute();
 
             if ($sql->rowCount() > 0) {
@@ -64,7 +64,7 @@ class UserDAO {
     public function update(User $u) {
         
         $sql = $this->pdo->prepare("UPDATE users SET 
-            nome = :nome,
+            name = :name,
             email = :email,
             password = :password,
             birthdate = :birthdate,
@@ -75,20 +75,43 @@ class UserDAO {
             token = :token
         ");
 
-        $sql->bindValue('nome', $u->nome);
-        $sql->bindValue('email', $u->email);
-        $sql->bindValue('password', $u->password);
-        $sql->bindValue('birthdate', $u->birthdate);
-        $sql->bindValue('city', $u->city);
-        $sql->bindValue('work', $u->work);
-        $sql->bindValue('avatar', $u->avatar);
-        $sql->bindValue('cover', $u->cover);
-        $sql->bindValue('token', $u->token);
+        $sql->bindValue(':name', $u->nome);
+        $sql->bindValue(':email', $u->email);
+        $sql->bindValue(':password', password_hash($u->password, PASSWORD_DEFAULT));
+        $sql->bindValue(':birthdate', $u->birthdate);
+        $sql->bindValue(':city', $u->city);
+        $sql->bindValue(':work', $u->work);
+        $sql->bindValue(':avatar', $u->avatar);
+        $sql->bindValue(':cover', $u->cover);
+        $sql->bindValue(':token', $u->token);
 
         $sql->execute();
     }
 
-    public function store(User $u) {
+    public function insert(User $u) {
         
+        $sql = $this->pdo->prepare("INSERT INTO users
+            (
+                name,
+                email,
+                password,
+                birthdate,
+                token
+            ) 
+            VALUES (
+                :name,
+                :email,
+                :password,
+                :birthdate,
+                :token
+            )"
+        );
+        
+        $sql->bindValue(':name', $u->name);
+        $sql->bindValue(':email', $u->email);
+        $sql->bindValue(':password',  password_hash($u->password, PASSWORD_DEFAULT));
+        $sql->bindValue(':birthdate', $u->birthdate);
+        $sql->bindValue(':token', $u->token);
+        $sql->execute();
     }
 }

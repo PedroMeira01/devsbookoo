@@ -1,18 +1,18 @@
 <?php
 require "config.php";
-require "models/Auth.php";
+require "services/Auth.php";
 
 $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
-$password = filter_input(INPUT_POST, 'password', FILTER_VALIDATE_PASSWORD);
+$password = filter_input(INPUT_POST, 'password');
 
 if ($email && $password) {
-    $auth = new Auth($pdo, $base);
-  
+    $auth = new Auth($pdo, BASE);
     if ($auth->validateLogin($email, $password)) {
-      header('Location:'.$base);
+      header('Location:'.BASE);
       exit;
     }
 }
 
-header('Location:'.$base.'login.php');
+$_SESSION['flash'] = 'Preencha todos os campos!';
+header('Location:'.BASE.'login.php');
 exit;

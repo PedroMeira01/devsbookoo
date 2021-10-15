@@ -1,8 +1,8 @@
 <?php
 require "config.php";
-require "models\Auth.php";
+require "services\Auth.php";
 
-$auth = new Auth($pdo, $base);
+$auth = new Auth($pdo, BASE);
 $userInfo = $auth->checkToken();
 
-echo $userInfo;
+echo "Usuário logado!";
