@@ -88,13 +88,7 @@ class UserDAO {
         $sql->execute();
     }
 
+    public function store(User $u) {
+        
+    }
 }
-
-$u->email = $array['email'] ?? '';
-        $u->password = $array['password'] ?? '';
-        $u->birthdate = $array['birthdate'] ?? '';
-        $u->city = $array['city'] ?? '';
-        $u->work = $array['work'] ?? '';
-        $u->avatar = $array['avatar'] ?? '';
-        $u->cover = $array['cover'] ?? '';
-        $u->token = $array['token'] ?? '';

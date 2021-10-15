@@ -6,13 +6,12 @@ $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
 $password = filter_input(INPUT_POST, 'password', FILTER_VALIDATE_PASSWORD);
 
 if ($email && $password) {
-  $auth = new Auth($pdo, $base);
+    $auth = new Auth($pdo, $base);
   
-  if ($auth->validateLogin($email, $password)) {
-    header('Location:'.$base);
-    exit;
-  }
-
+    if ($auth->validateLogin($email, $password)) {
+      header('Location:'.$base);
+      exit;
+    }
 }
 
 header('Location:'.$base.'login.php');
